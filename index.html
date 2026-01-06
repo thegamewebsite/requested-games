@@ -27,11 +27,37 @@
             font-size: 42px;
             font-weight: 900;
             letter-spacing: 2px;
-            margin: 40px 0;
+            margin: 40px 0 10px 0; /* Reduced bottom margin for search bar */
             text-transform: uppercase;
             background: linear-gradient(#4facfe, #00f2fe);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        /* --- Search Bar Styling --- */
+        .search-container {
+            width: 90%;
+            max-width: 600px;
+            margin-bottom: 40px;
+        }
+
+        #gameSearch {
+            width: 100%;
+            padding: 15px 25px;
+            border-radius: 30px;
+            border: 2px solid rgba(79, 172, 254, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+            text-align: center;
+        }
+
+        #gameSearch:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 15px rgba(79, 172, 254, 0.4);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         /* --- Grid of Rectangles --- */
@@ -56,6 +82,11 @@
             flex-direction: column;
             justify-content: center;
             min-height: 140px;
+        }
+
+        /* Class to hide cards during search */
+        .hidden {
+            display: none !important;
         }
 
         .card:hover {
@@ -93,7 +124,6 @@
             transform: scale(1.05);
         }
 
-        /* Form Card Specific Style */
         .form-card {
             background: rgba(79, 172, 254, 0.15);
             border: 2px dashed #4facfe;
@@ -104,7 +134,11 @@
 
     <h1 class="main-header">Requested Games</h1>
 
-    <div class="request-grid">
+    <div class="search-container">
+        <input type="text" id="gameSearch" placeholder="Search for a game..." onkeyup="filterGames()">
+    </div>
+
+    <div class="request-grid" id="gameGrid">
         
         <div class="card form-card">
             <h3>Request a Game</h3>
@@ -116,7 +150,68 @@
             <a href="https://theasianone69.github.io/cookieclicker/" target="_blank" class="btn">Play Now</a>
         </div>
 
+        <div class="card">
+            <h3>Bitlife</h3>
+            <button class="btn" onclick="launch('Bitlife', 'https://thegamewebsite.github.io/bitlife/')">Play Now</button>
         </div>
 
+        <div class="card">
+            <h3>Ragdoll Hit</h3>
+            <button class="btn" onclick="launch('Ragdoll Hit', 'https://thegamewebsite.github.io/ragdoll-hit/')">Play Now</button>
+        </div>
+
+        <div class="card">
+            <h3>Ragdoll Archers</h3>
+            <button class="btn" onclick="launch('Ragdoll Archers', 'https://thegamewebsite.github.io/RagdollArchers/')">Play Now</button>
+        </div>
+
+    </div>
+
+    <script>
+        // SEARCH FUNCTIONALITY
+        function filterGames() {
+            let input = document.getElementById('gameSearch').value.toLowerCase();
+            let cards = document.getElementsByClassName('card');
+
+            for (let i = 0; i < cards.length; i++) {
+                let title = cards[i].getElementsByTagName('h3')[0].innerText.toLowerCase();
+                
+                // If title matches search, show it. Otherwise, hide it.
+                if (title.includes(input)) {
+                    cards[i].classList.remove('hidden');
+                } else {
+                    cards[i].classList.add('hidden');
+                }
+            }
+        }
+
+        // ABOUT:BLANK LAUNCHER
+        function launch(name, url) {
+            const newTab = window.open('about:blank', '_blank');
+            if (!newTab) {
+                alert('Popup blocked! Please allow popups.');
+                return;
+            }
+
+            const content = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>${name}</title>
+                    <style>
+                        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; background: #000; }
+                        iframe { border: none; width: 100%; height: 100%; }
+                    </style>
+                </head>
+                <body>
+                    <iframe src="${url}"></iframe>
+                </body>
+                </html>`;
+
+            newTab.document.open();
+            newTab.document.write(content);
+            newTab.document.close();
+        }
+    </script>
 </body>
 </html>
